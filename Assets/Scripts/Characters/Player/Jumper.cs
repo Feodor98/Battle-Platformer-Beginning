@@ -5,15 +5,15 @@ public class Jumper : MonoBehaviour
 {
     [SerializeField] private float _jumpForce = 400.0f;
     
-    private Rigidbody2D _rigidbody;
-
+    private Rigidbody2D _rigidBody;
+    
     private void Awake()
     {
-        _rigidbody = GetComponent<Rigidbody2D>();
+        _rigidBody = GetComponent<Rigidbody2D>();
     }
     
     public void Jump()
     {
-        _rigidbody.AddForce(Vector2.up * _jumpForce);
+        _rigidBody.AddForce(new Vector2(0, _jumpForce));
     }
 }
