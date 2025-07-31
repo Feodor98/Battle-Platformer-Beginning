@@ -6,41 +6,45 @@ public class InputReceiver : MonoBehaviour
 {
     private const string HorizontalAxis = "Horizontal";
     private const string JumpAxis = "Jump";
+    private const string FireAxis = "Fire1";
     
-    private Dictionary<string, bool> _holdState;
+    private Dictionary<string, bool> _axisHoldState;
     
-    public event Action<float> MoveButtonDown;
-    public event Action MoveButtonUp;
-    public event Action<float> JumpButtonDown;
+    public event Action<float> MovePressed;
+    public event Action MoveReleased;
+    public event Action<float> JumpPressed;
+    public event Action<float> FirePressed;
     
     private void Awake()
     {
-        _holdState = new Dictionary<string, bool>
+        _axisHoldState = new Dictionary<string, bool>
         {
-            {HorizontalAxis, false},
-            {JumpAxis, false},
+            { HorizontalAxis, false },
+            { JumpAxis, false },
+            { FireAxis, false }
         };
     }
     
     private void Update()
     {
-        UpdateAxisHoldState(HorizontalAxis, MoveButtonDown, MoveButtonUp);
-        UpdateAxisHoldState(JumpAxis, JumpButtonDown, null);
+        UpdateAxisHoldState(HorizontalAxis, MovePressed, MoveReleased);
+        UpdateAxisHoldState(JumpAxis, JumpPressed, null);
+        UpdateAxisHoldState(FireAxis, FirePressed, null);
     }
     
     private void UpdateAxisHoldState(string axisName, Action<float> axisDownEvent, Action axisUpEvent)
     {
-        float axisDelta = Input.GetAxisRaw(axisName);
+        float axisValue = Input.GetAxisRaw(axisName);
         
-        if (axisDelta != 0.0f && _holdState[axisName] == false)
+        if (axisValue != 0 && _axisHoldState[axisName] == false)
         {
-            _holdState[axisName] = true;
-            axisDownEvent?.Invoke(axisDelta);
+            _axisHoldState[axisName] = true;
+            axisDownEvent?.Invoke(axisValue);
         }
         
-        if (axisDelta == 0.0f && _holdState[axisName])
+        if (axisValue == 0 && _axisHoldState[axisName])
         {
-            _holdState[axisName] = false;
+            _axisHoldState[axisName] = false;
             axisUpEvent?.Invoke();
         }
     }
